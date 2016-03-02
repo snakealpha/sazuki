@@ -1,6 +1,8 @@
 """
 Support for google proto buffers.
 """
+from os import linesep
+
 from support import BaseValueType
 from support.MetaGenerator import *
 
@@ -21,13 +23,22 @@ class ValueType(BaseValueType):
     sfixed32 = "sfixed32"
     float = "float"
 
-def generate_structure(struct_descriptor, depth = 0):
+def generate_structure(struct_descriptor, descriptor_list, depth = 0):
     # TODO: to be implemented.
     pass
 
 def generate_enum(enum_descriptor, depth = 0):
-    # TODO: to be implemented.
-    pass
+    if not (enum_descriptor is EnumDescriptor):
+        raise TypeError('enum_descriptor argument must be a instance of EnumDescriptor.')
+
+    content = ""
+    for (name, value) in enum_descriptor.fields.items():
+        content += ("%s%s = %d" % ("    " * depth + 1, name, value)) + linesep
+
+    return "%(wrap)enum %(name)%(nl)%(wrap){%(nl)%(content)%(nl)%(wrap)}%(nl)" % {wrap:"    " * depth, 
+                                                                                  name:enum_descriptor.name, 
+                                                                                  content:content,
+                                                                                  nl:linesep}
 
 def generate_field(field_descriptor, depth = 0):
     if not (field_descriptor is FieldDescriptor):

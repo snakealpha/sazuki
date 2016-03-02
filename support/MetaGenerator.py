@@ -48,11 +48,11 @@ class StructDescriptor:
     name = ""
     is_global = True
 
-    def generate_meta(self, depth = 0):
+    def generate_meta(self, descriptor_list, depth = 0):
         """
         Return generated meta string.
         """
-        generate_struct(self, depth)
+        generate_struct(self, descriptor_list, depth)
         pass
 
 class EnumDescriptor(StructDescriptor):

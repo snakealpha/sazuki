@@ -23,8 +23,24 @@ class ValueType(BaseValueType):
     sfixed32 = "sfixed32"
     float = "float"
 
-def generate_structure(struct_descriptor, descriptor_list, depth = 0):
-    # TODO: to be implemented.
+def generate_structure(struct_descriptor, depth=0):
+    if not (struct_descriptor is StructDescriptor):
+        raise TypeError('enum_descriptor argument must be a instance of StructDescriptor.')
+
+    parsed_structs = list()
+    content = "%(wrap)message %(name)%(nl)%(wrap){%(nl)" % {"wrap":"    " * depth,
+                                                            "name":struct_descriptor.name,
+                                                            "nu":linesep}
+
+    for field in struct_descriptor.fields:
+        if field.type == ValueType.enum and not field.struct_type.is_global and field.struct_type not in parsed_structs:
+            parsed_structs.append(field.struct_type)
+            content += generate_enum(field.struct_type, depth + 1)
+        elif field.type == ValueType.struct and not field.struct_type.is_global and field.struct_type not in parsed_structs:
+            parsed_structs.append(field.struct_type)
+            content += generate_struct(field.struct_type, depth + 1)
+
+        content += generate_field(field, depth + 1)
     pass
 
 def generate_enum(enum_descriptor, depth = 0):
@@ -35,10 +51,10 @@ def generate_enum(enum_descriptor, depth = 0):
     for (name, value) in enum_descriptor.fields.items():
         content += ("%s%s = %d" % ("    " * depth + 1, name, value)) + linesep
 
-    return "%(wrap)enum %(name)%(nl)%(wrap){%(nl)%(content)%(nl)%(wrap)}%(nl)" % {wrap:"    " * depth, 
-                                                                                  name:enum_descriptor.name, 
-                                                                                  content:content,
-                                                                                  nl:linesep}
+    return "%(wrap)enum %(name)%(nl)%(wrap){%(nl)%(content)%(nl)%(wrap)}%(nl)" % {"wrap":"    " * depth, 
+                                                                                  "name":enum_descriptor.name, 
+                                                                                  "content":content,
+                                                                                  "nl":linesep}
 
 def generate_field(field_descriptor, depth = 0):
     if not (field_descriptor is FieldDescriptor):
@@ -46,7 +62,8 @@ def generate_field(field_descriptor, depth = 0):
 
     field_descriptor.check_vaild()
 
-    return "%s%s %s = %d;" % ("    " * depth, 
+    return "%s%s %s = %d;%s" % ("    " * depth, 
                              "repeated" if field_descriptor.is_collection else ("optional" if field_descriptor.is_optional else "required"), 
-                             field_descriptor.field_name, 
-                             field_descriptor.field_index)
+                             field_descriptor.field_name if field_descriptor.type != ValueType.structure and field_descriptor.type != ValueType.enum else field_descriptor.struct_type.name, 
+                             field_descriptor.field_index,
+                             linesep)

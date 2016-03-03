@@ -5,8 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{03d3fec2-1daa-496f-8ebd-7c8bf9bfdc85}</ProjectGuid>
     <ProjectHome>..\</ProjectHome>
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>tester.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -33,6 +32,9 @@
     </Compile>
     <Compile Include="support\__init__.py" />
     <Compile Include="setup.py" />
+    <Compile Include="tester.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="support\" />

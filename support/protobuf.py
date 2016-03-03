@@ -41,9 +41,11 @@ def generate_structure(struct_descriptor, depth=0):
             content += generate_struct(field.struct_type, depth + 1)
 
         content += generate_field(field, depth + 1)
-    pass
 
-def generate_enum(enum_descriptor, depth = 0):
+    content += "    " * depth + "}" + linesep
+    return content
+
+def generate_enum(enum_descriptor, depth=0):
     if not (enum_descriptor is EnumDescriptor):
         raise TypeError('enum_descriptor argument must be a instance of EnumDescriptor.')
 
@@ -56,7 +58,7 @@ def generate_enum(enum_descriptor, depth = 0):
                                                                                   "content":content,
                                                                                   "nl":linesep}
 
-def generate_field(field_descriptor, depth = 0):
+def generate_field(field_descriptor, depth=0):
     if not (field_descriptor is FieldDescriptor):
         raise TypeError('field_descriptor argument must be a instance of FieldDescriptor.')
 

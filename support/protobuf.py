@@ -6,22 +6,24 @@ from os import linesep
 from support import BaseValueType
 from support.MetaGenerator import *
 
-class ValueType(BaseValueType):
-    int32 = "int32"
-    int64 = "int64"
-    uint32 = "uint32"
-    uint64 = "uint64"
-    sint32 = "sint32"
-    sint64 = "sint64"
-    bool = "bool"
-    fixed64 = "fixed64"
-    sfixed64 = "sfixed64"
-    double = "double"
-    string = "string"
-    bytes = "bytes"
-    fixed32 = "fixed32"
-    sfixed32 = "sfixed32"
-    float = "float"
+class ProtobufPrimitiveCollection(PrimitiveCollection):
+    type_names = [
+        "int32",
+        "int64",
+        "uint32",
+        "uint64",
+        "sint32",
+        "sint64",
+        "bool",
+        "fixed64",
+        "sfixed64",
+        "double",
+        "string",
+        "bytes",
+        "fixed32",
+        "sfixed32",
+        "float",
+    ]
 
 def generate_structure(struct_descriptor, depth=0):
     if not (struct_descriptor is StructDescriptor):
@@ -66,6 +68,6 @@ def generate_field(field_descriptor, depth=0):
 
     return "%s%s %s = %d;%s" % ("    " * depth, 
                              "repeated" if field_descriptor.is_collection else ("optional" if field_descriptor.is_optional else "required"), 
-                             field_descriptor.field_name if field_descriptor.type != ValueType.structure and field_descriptor.type != ValueType.enum else field_descriptor.struct_type.name, 
+                             field_descriptor.field_name, 
                              field_descriptor.field_index,
                              linesep)

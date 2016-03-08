@@ -1,17 +1,20 @@
 """
 Generator of meta objects of structs.
 """
-
 import imp
+from importlib import import_module
+
+from support import *
 
 # TODO: import of the serializer will happend from outer caller,this line should be deleted while released.
-from support.protobuf import *
+protocol_module = import_module("support.protobuf")
+
 
 class FieldDescriptor:
     """
     Used to descript a field in a struct.
     """
-    type = ValueType(ValueType.not_assigned)
+    type = ValueType.not_assigned
     struct_type = None
     is_collection = False
     is_optional = False
@@ -22,13 +25,13 @@ class FieldDescriptor:
         """
         Check if current field can generate a meta string currect.
         """
-        if type == ValueType.not_assigned:
+        if self.type == ValueType.not_assigned:
             raise ValueError('Have not assign a type to a field.')
-        if field_index <= 0:
+        if self.field_index <= 0:
             raise ValueError('Index of a field is 0.')
-        if not field_name:
+        if not self.field_name:
             raise ValueError('A field must have a name')
-        if type == ValueType.structure and not struct_type:
+        if self.type == ValueType.structure and not self.struct_type:
             raise ValueError('Field type is a struct, but struct type is not assigned.')
 
         pass
@@ -37,8 +40,7 @@ class FieldDescriptor:
         """
         Return generated meta string.
         """
-        generate_field(self, depth)
-        pass
+        return protocol_module.generate_field(self, depth)
 
 class StructDescriptor:
     """
@@ -52,8 +54,7 @@ class StructDescriptor:
         """
         Return generated meta string.
         """
-        generate_struct(self, depth)
-        pass
+        return protocol_module.generate_structure(self, depth)
 
 class EnumDescriptor(StructDescriptor):
     """
@@ -65,6 +66,5 @@ class EnumDescriptor(StructDescriptor):
         """
         Return generated meta string.
         """
-        generate_enum(self, depth)
-        pass
+        return protocol_module.generate_enum(self, depth)
     

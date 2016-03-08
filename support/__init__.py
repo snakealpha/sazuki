@@ -1,6 +1,4 @@
-from enum import Enum
-
-class ValueType(Enum):
+class ValueType:
     """
     Value Type that must included in a Sazuki ValueType enum.
     """

@@ -27,6 +27,7 @@
     <Compile Include="support\MetaGenerator.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="support\MetaParser.py" />
     <Compile Include="support\protobuf.py">
       <SubType>Code</SubType>
     </Compile>
